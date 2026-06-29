@@ -1,14 +1,25 @@
 services:
+  # 下面这组配置保留为“官方 node exporter 尝试直接看宿主机”的对照方案。
+  # 在 macOS + Docker Desktop 环境里，这套做法会碰到挂载传播语义问题，
+  # 因此当前不直接启用，但保留在这里用于说明我们已经验证过这条路线。
+  #
+  # node-exporter:
+  #   image: prom/node-exporter:latest
+  #   container_name: node-exporter
+  #   command:
+  #     - "--path.rootfs=/host"
+  #   ports:
+  #     - "${NODE_EXPORTER_PORT:-9100}:9100"
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /:/host:ro,rslave
+  #
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
-    command:
-      - "--path.rootfs=/host"
     ports:
       - "${NODE_EXPORTER_PORT:-9100}:9100"
     restart: unless-stopped
-    volumes:
-      - /:/host:ro,rslave
 
   prometheus:
     image: prom/prometheus:latest
@@ -23,6 +34,8 @@ services:
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - node-exporter
 

@@ -1,0 +1,236 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "id": null,
+  "panels": [
+    {
+      "gridPos": {"h": 5, "w": 24, "x": 0, "y": 0},
+      "id": 1,
+      "options": {
+        "content": "## Compare Node In/Out Docker\n\nThis dashboard compares the official `node exporter` running in Docker (`9100`) with the official `node exporter` running on the host (`9102`).",
+        "mode": "markdown"
+      },
+      "title": "Overview",
+      "type": "text"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 3},
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{job=\"official-node-exporter\",mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "docker_node",
+          "refId": "A"
+        },
+        {
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{job=\"host-node-exporter\",mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "host_node",
+          "refId": "B"
+        }
+      ],
+      "title": "CPU Used",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 3},
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "expr": "node_memory_MemTotal_bytes{job=\"official-node-exporter\"}",
+          "legendFormat": "docker_node",
+          "refId": "A"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{job=\"host-node-exporter\"}",
+          "legendFormat": "host_node",
+          "refId": "B"
+        }
+      ],
+      "title": "Total Memory",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 3},
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "expr": "node_memory_MemTotal_bytes{job=\"official-node-exporter\"} - node_memory_MemAvailable_bytes{job=\"official-node-exporter\"}",
+          "legendFormat": "docker_node",
+          "refId": "A"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{job=\"host-node-exporter\"} - node_memory_MemAvailable_bytes{job=\"host-node-exporter\"}",
+          "legendFormat": "host_node",
+          "refId": "B"
+        }
+      ],
+      "title": "Current Memory Used",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 11},
+      "id": 5,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {"expr": "up{job=~\"official-node-exporter|host-node-exporter\"}", "legendFormat": "{{job}}", "refId": "A"}
+      ],
+      "title": "Exporter Status",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 11},
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "expr": "sum(node_filesystem_size_bytes{job=\"official-node-exporter\",fstype!~\"tmpfs|overlay\",mountpoint=\"/\"})",
+          "legendFormat": "docker_node",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(node_filesystem_size_bytes{job=\"host-node-exporter\",fstype!~\"tmpfs|overlay\",mountpoint=\"/\"})",
+          "legendFormat": "host_node",
+          "refId": "B"
+        }
+      ],
+      "title": "Root Disk Total",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 11},
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "expr": "sum(node_filesystem_size_bytes{job=\"official-node-exporter\",fstype!~\"tmpfs|overlay\",mountpoint=\"/\"} - node_filesystem_avail_bytes{job=\"official-node-exporter\",fstype!~\"tmpfs|overlay\",mountpoint=\"/\"})",
+          "legendFormat": "docker_node",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(node_filesystem_size_bytes{job=\"host-node-exporter\",fstype!~\"tmpfs|overlay\",mountpoint=\"/\"} - node_filesystem_avail_bytes{job=\"host-node-exporter\",fstype!~\"tmpfs|overlay\",mountpoint=\"/\"})",
+          "legendFormat": "host_node",
+          "refId": "B"
+        }
+      ],
+      "title": "Root Disk Used",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 19},
+      "id": 8,
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "single", "sort": "none"}
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{job=\"official-node-exporter\",mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "docker_node cpu",
+          "refId": "A"
+        },
+        {
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{job=\"host-node-exporter\",mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "host_node cpu",
+          "refId": "B"
+        }
+      ],
+      "title": "CPU Comparison",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 19},
+      "id": 9,
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "single", "sort": "none"}
+      },
+      "targets": [
+        {
+          "expr": "node_memory_MemTotal_bytes{job=\"official-node-exporter\"} - node_memory_MemAvailable_bytes{job=\"official-node-exporter\"}",
+          "legendFormat": "docker_node memory used",
+          "refId": "A"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{job=\"host-node-exporter\"} - node_memory_MemAvailable_bytes{job=\"host-node-exporter\"}",
+          "legendFormat": "host_node memory used",
+          "refId": "B"
+        }
+      ],
+      "title": "Memory Used Comparison",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["node", "compare"],
+  "templating": {"list": []},
+  "time": {"from": "now-30m", "to": "now"},
+  "timezone": "",
+  "title": "Compare Node In/Out Docker",
+  "uid": "compare-node-in-out-docker",
+  "version": 1
+}

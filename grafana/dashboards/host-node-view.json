@@ -1,0 +1,214 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "id": null,
+  "panels": [
+    {
+      "gridPos": {"h": 5, "w": 24, "x": 0, "y": 0},
+      "id": 1,
+      "options": {
+        "content": "## FastAPI Exporter View\n\nSource: custom `FastAPI exporter` on `9101`.\n\nThis dashboard shows only the metrics exposed by the custom exporter.",
+        "mode": "markdown"
+      },
+      "title": "Overview",
+      "type": "text"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "orange", "value": 60},
+              {"color": "red", "value": 85}
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 8, "w": 6, "x": 0, "y": 3},
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "targets": [
+        {"expr": "custom_host_cpu_used_percent{job=\"custom-fastapi-exporter\"}", "refId": "A"}
+      ],
+      "title": "CPU Used",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 6, "x": 6, "y": 3},
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {"expr": "custom_host_memory_total_bytes{job=\"custom-fastapi-exporter\"}", "refId": "A"}
+      ],
+      "title": "Total Memory",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 6, "x": 12, "y": 3},
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {"expr": "custom_host_memory_used_bytes{job=\"custom-fastapi-exporter\"}", "refId": "A"}
+      ],
+      "title": "Current Memory Used",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 6, "x": 18, "y": 3},
+      "id": 5,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {"expr": "up{job=\"custom-fastapi-exporter\"}", "refId": "A"}
+      ],
+      "title": "Exporter Status",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 11},
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {"expr": "custom_host_disk_root_total_bytes{job=\"custom-fastapi-exporter\"}", "refId": "A"}
+      ],
+      "title": "Root Disk Total",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 11},
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {"expr": "custom_host_disk_root_used_bytes{job=\"custom-fastapi-exporter\"}", "refId": "A"}
+      ],
+      "title": "Root Disk Used",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 11},
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {"expr": "custom_host_disk_root_used_percent{job=\"custom-fastapi-exporter\"}", "refId": "A"}
+      ],
+      "title": "Root Disk Used %",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "Bps"}, "overrides": []},
+      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 19},
+      "id": 9,
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "single", "sort": "none"}
+      },
+      "targets": [
+        {
+          "expr": "sum(custom_host_network_receive_bytes{job=\"custom-fastapi-exporter\"})",
+          "legendFormat": "receive",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(custom_host_network_transmit_bytes{job=\"custom-fastapi-exporter\"})",
+          "legendFormat": "transmit",
+          "refId": "B"
+        }
+      ],
+      "title": "Network Bytes",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 19},
+      "id": 10,
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true},
+        "tooltip": {"mode": "single", "sort": "none"}
+      },
+      "targets": [
+        {"expr": "custom_host_cpu_used_percent{job=\"custom-fastapi-exporter\"}", "legendFormat": "cpu", "refId": "A"},
+        {"expr": "custom_host_memory_used_percent{job=\"custom-fastapi-exporter\"}", "legendFormat": "memory", "refId": "B"},
+        {"expr": "custom_host_gpu_utilization_percent{job=\"custom-fastapi-exporter\"}", "legendFormat": "gpu", "refId": "C"}
+      ],
+      "title": "CPU / Memory / GPU Used",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["fastapi", "node"],
+  "templating": {"list": []},
+  "time": {"from": "now-30m", "to": "now"},
+  "timezone": "",
+  "title": "FastAPI Exporter View",
+  "uid": "fastapi-exporter-view",
+  "version": 1
+}

@@ -1,0 +1,81 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "id": null,
+  "panels": [
+    {
+      "gridPos": {"h": 5, "w": 24, "x": 0, "y": 0},
+      "id": 1,
+      "options": {
+        "content": "## Node On Host View\n\nSource: official `node exporter` on the host on `9102`.\n\nThis dashboard shows only the metrics exposed by the host-side official exporter.",
+        "mode": "markdown"
+      },
+      "title": "Overview",
+      "type": "text"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 6, "x": 0, "y": 5},
+      "id": 2,
+      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "100 - (avg(rate(node_cpu_seconds_total{job=\"host-node-exporter\",mode=\"idle\"}[5m])) * 100)", "refId": "A"}],
+      "title": "CPU Used",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 6, "x": 6, "y": 5},
+      "id": 3,
+      "options": {"colorMode": "value", "graphMode": "none", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value_and_name"},
+      "targets": [{"expr": "node_memory_MemTotal_bytes{job=\"host-node-exporter\"}", "refId": "A"}],
+      "title": "Total Memory",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 6, "x": 12, "y": 5},
+      "id": 4,
+      "options": {"colorMode": "value", "graphMode": "none", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value_and_name"},
+      "targets": [{"expr": "node_memory_MemTotal_bytes{job=\"host-node-exporter\"} - node_memory_MemAvailable_bytes{job=\"host-node-exporter\"}", "refId": "A"}],
+      "title": "Current Memory Used",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 6, "x": 18, "y": 5},
+      "id": 5,
+      "options": {"colorMode": "background", "graphMode": "none", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value_and_name"},
+      "targets": [{"expr": "up{job=\"host-node-exporter\"}", "refId": "A"}],
+      "title": "Exporter Status",
+      "type": "stat"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["host", "node"],
+  "templating": {"list": []},
+  "time": {"from": "now-30m", "to": "now"},
+  "timezone": "",
+  "title": "Node On Host View",
+  "uid": "node-on-host-view",
+  "version": 1
+}
