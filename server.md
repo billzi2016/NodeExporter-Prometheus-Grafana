@@ -7,13 +7,13 @@
 当前项目不是单一采集链路，而是两套采集并存：
 
 - 一套是官方 `node exporter`
-- 一套是自定义 `FastAPI exporter`
+- 一套是自定义 `homemade-profiler`
 - 一套是宿主机版官方 `node_exporter`
 
 这样设计的原因是：
 
 - 官方 `node exporter` 可以展示标准 Prometheus 生态接法
-- 自定义 `FastAPI exporter` 可以展示你自己的宿主机采样能力
+- 自定义 `homemade-profiler` 可以展示你自己的宿主机采样能力
 - `Prometheus` 可以统一管理两套采集目标
 - `Grafana` 可以统一展示它们的数据
 
@@ -22,8 +22,8 @@
 ```mermaid
 flowchart LR
     subgraph Host["macOS Host"]
-        API["API_test 采样逻辑<br/>CPU / RAM / GPU / Network / Disk"]
-        FASTAPI["自定义 FastAPI Exporter<br/>Port 9101<br/>宿主机本地运行"]
+        API["mac_profiler 采样逻辑<br/>CPU / RAM / GPU / Network / Disk"]
+        FASTAPI["homemade-profiler<br/>Port 9101<br/>宿主机本地运行"]
         API --> FASTAPI
     end
 
@@ -67,15 +67,15 @@ flowchart LR
 - 有标准接入价值
 - 但对“监控这台电脑本身”来说，数据价值有限
 
-### 2. 自定义 FastAPI Exporter
+### 2. homemade-profiler
 
-- 服务名：自定义 exporter，没有放进 compose
+- 服务名：`homemade-profiler`，没有放进 compose
 - 运行方式：宿主机本地直接运行
 - 端口：`9101`
 - 类型：自定义 Python / FastAPI 服务
 - 作用：输出更接近真实宿主机的数据
 
-这个服务会复用 `API_test` 目录里的采样逻辑，包括：
+这个服务会直接调用 `homemade-profiler/mac_profiler` 里的采样逻辑，包括：
 
 - CPU
 - 内存
@@ -139,14 +139,14 @@ Grafana 当前通过 provisioning 自动接入 `Prometheus` 数据源。
 
 不由 `docker-compose.yml` 管理：
 
-- 自定义 `FastAPI exporter`
+- `homemade-profiler`
 
 它是直接在宿主机启动的本地进程。
 
 当前启动方式是：
 
 ```bash
-cd /Users/bizi/Desktop/GitHub/NodeExporter-Prometheus-Grafana/node-exporter
+cd /Users/bizi/Desktop/GitHub/NodeExporter-Prometheus-Grafana/homemade-profiler
 /opt/anaconda3/bin/python -m uvicorn app:app --host 0.0.0.0 --port 9101
 ```
 
@@ -164,8 +164,8 @@ cd /Users/bizi/Desktop/GitHub/NodeExporter-Prometheus-Grafana/node-exporter
 
 ### 路线二：真实宿主机采集链路
 
-1. `API_test` 里的本机采样逻辑读取宿主机状态
-2. 自定义 `FastAPI exporter` 在 `9101` 暴露 `/metrics`
+1. `homemade-profiler/mac_profiler` 里的本机采样逻辑读取宿主机状态
+2. `homemade-profiler` 在 `9101` 暴露 `/metrics`
 3. `Prometheus` 抓取 `9101/metrics`
 4. `Grafana` 从 `Prometheus` 读取这套指标
 
@@ -174,7 +174,7 @@ cd /Users/bizi/Desktop/GitHub/NodeExporter-Prometheus-Grafana/node-exporter
 ## 端口说明
 
 - `9100`：官方 `node exporter`
-- `9101`：自定义 `FastAPI exporter`
+- `9101`：`homemade-profiler`
 - `9102`：宿主机版官方 `node_exporter`
 - `9090`：`Prometheus`
 - `3000`：`Grafana`
@@ -209,7 +209,7 @@ cd /Users/bizi/Desktop/GitHub/NodeExporter-Prometheus-Grafana/node-exporter
 - 当前是否需要用户名密码：不需要
 - 当前是否有额外认证：没有
 
-### 自定义 FastAPI Exporter
+### homemade-profiler
 
 - 地址：`http://127.0.0.1:9101/metrics`
 - 健康检查：`http://127.0.0.1:9101/healthz`

@@ -19,10 +19,10 @@
   "id": null,
   "panels": [
     {
-      "gridPos": {"h": 5, "w": 24, "x": 0, "y": 0},
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 0 },
       "id": 1,
       "options": {
-        "content": "## Node On Host View\n\nSource: official `node exporter` on the host on `9102`.\n\nThis dashboard shows only the metrics exposed by the host-side official exporter.",
+        "content": "## Node On Host View\n\nSource: official `node_exporter` running directly on the macOS host on port `9102`.\n\nThis page only shows metrics exposed by the host-side official exporter.",
         "mode": "markdown"
       },
       "title": "Overview",
@@ -30,52 +30,211 @@
     },
     {
       "datasource": "Prometheus",
-      "fieldConfig": {"defaults": {"unit": "percent"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 6, "x": 0, "y": 5},
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 60 },
+              { "color": "red", "value": 85 }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 6 },
       "id": 2,
-      "options": {"colorMode": "value", "graphMode": "area", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"expr": "100 - (avg(rate(node_cpu_seconds_total{job=\"host-node-exporter\",mode=\"idle\"}[5m])) * 100)", "refId": "A"}],
-      "title": "CPU Used",
-      "type": "stat"
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        { "expr": "100 - (avg(rate(node_cpu_seconds_total{job=\"host-node-exporter\",mode=\"idle\"}[5m])) * 100)", "legendFormat": "CPU Used %", "refId": "A" }
+      ],
+      "title": "CPU Used %",
+      "type": "gauge"
     },
     {
       "datasource": "Prometheus",
-      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 6, "x": 6, "y": 5},
+      "fieldConfig": { "defaults": { "max": 1, "min": 0, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 6 },
       "id": 3,
-      "options": {"colorMode": "value", "graphMode": "none", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value_and_name"},
-      "targets": [{"expr": "node_memory_MemTotal_bytes{job=\"host-node-exporter\"}", "refId": "A"}],
-      "title": "Total Memory",
-      "type": "stat"
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        { "expr": "up{job=\"host-node-exporter\"}", "legendFormat": "Exporter Up", "refId": "A" }
+      ],
+      "title": "Exporter Up",
+      "type": "gauge"
     },
     {
       "datasource": "Prometheus",
-      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 6, "x": 12, "y": 5},
+      "fieldConfig": { "defaults": { "max": 128, "min": 0, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 6 },
       "id": 4,
-      "options": {"colorMode": "value", "graphMode": "none", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value_and_name"},
-      "targets": [{"expr": "node_memory_MemTotal_bytes{job=\"host-node-exporter\"} - node_memory_MemAvailable_bytes{job=\"host-node-exporter\"}", "refId": "A"}],
-      "title": "Current Memory Used",
-      "type": "stat"
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        { "expr": "count(count by (cpu) (node_cpu_seconds_total{job=\"host-node-exporter\",mode=\"idle\"}))", "legendFormat": "CPU Cores", "refId": "A" }
+      ],
+      "title": "CPU Cores",
+      "type": "gauge"
     },
     {
       "datasource": "Prometheus",
-      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 6, "x": 18, "y": 5},
+      "fieldConfig": { "defaults": { "max": 100, "min": 0, "unit": "percent" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 6 },
       "id": 5,
-      "options": {"colorMode": "background", "graphMode": "none", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value_and_name"},
-      "targets": [{"expr": "up{job=\"host-node-exporter\"}", "refId": "A"}],
-      "title": "Exporter Status",
-      "type": "stat"
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "expr": "(sum({__name__=~\"node_memory_(active|compressed|inactive|wired)_bytes\",job=\"host-node-exporter\"}) / sum({__name__=~\"node_memory_(active|compressed|inactive|wired|free|purgeable)_bytes\",job=\"host-node-exporter\"})) * 100",
+          "legendFormat": "Memory Used %",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory Used %",
+      "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 14 },
+      "id": 6,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "namePlacement": "left",
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "showUnfilled": true,
+        "sizing": "auto"
+      },
+      "targets": [
+        { "expr": "sum({__name__=~\"node_memory_(active|compressed|inactive|wired|free|purgeable)_bytes\",job=\"host-node-exporter\"})", "legendFormat": "memory_total", "refId": "A" },
+        { "expr": "sum({__name__=~\"node_memory_(active|compressed|inactive|wired)_bytes\",job=\"host-node-exporter\"})", "legendFormat": "memory_used", "refId": "B" },
+        { "expr": "sum({__name__=~\"node_memory_(free|purgeable)_bytes\",job=\"host-node-exporter\"})", "legendFormat": "memory_free", "refId": "C" }
+      ],
+      "title": "Memory Capacity And Usage",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 14 },
+      "id": 7,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "namePlacement": "left",
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "showUnfilled": true,
+        "sizing": "auto"
+      },
+      "targets": [
+        { "expr": "max(node_filesystem_size_bytes{job=\"host-node-exporter\",fstype!~\"tmpfs|devtmpfs\"})", "legendFormat": "disk_total", "refId": "A" },
+        { "expr": "max(node_filesystem_size_bytes{job=\"host-node-exporter\",fstype!~\"tmpfs|devtmpfs\"} - node_filesystem_avail_bytes{job=\"host-node-exporter\",fstype!~\"tmpfs|devtmpfs\"})", "legendFormat": "disk_used", "refId": "B" },
+        { "expr": "max(node_filesystem_avail_bytes{job=\"host-node-exporter\",fstype!~\"tmpfs|devtmpfs\"})", "legendFormat": "disk_free", "refId": "C" }
+      ],
+      "title": "Disk Capacity And Usage",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "percent" }, "overrides": [] },
+      "gridPos": { "h": 9, "w": 8, "x": 0, "y": 23 },
+      "id": 8,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        { "expr": "100 - (avg(rate(node_cpu_seconds_total{job=\"host-node-exporter\",mode=\"idle\"}[5m])) * 100)", "legendFormat": "cpu_used", "refId": "A" },
+        { "expr": "avg(rate(node_cpu_seconds_total{job=\"host-node-exporter\",mode=\"user\"}[5m])) * 100", "legendFormat": "cpu_user", "refId": "B" },
+        { "expr": "avg(rate(node_cpu_seconds_total{job=\"host-node-exporter\",mode=\"system\"}[5m])) * 100", "legendFormat": "cpu_system", "refId": "C" },
+        { "expr": "avg(rate(node_cpu_seconds_total{job=\"host-node-exporter\",mode=\"idle\"}[5m])) * 100", "legendFormat": "cpu_idle", "refId": "D" }
+      ],
+      "title": "CPU Breakdown",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "percent" }, "overrides": [] },
+      "gridPos": { "h": 9, "w": 8, "x": 8, "y": 23 },
+      "id": 9,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        {
+          "expr": "(sum({__name__=~\"node_memory_(active|compressed|inactive|wired)_bytes\",job=\"host-node-exporter\"}) / sum({__name__=~\"node_memory_(active|compressed|inactive|wired|free|purgeable)_bytes\",job=\"host-node-exporter\"})) * 100",
+          "legendFormat": "memory_used",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory Used Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] },
+      "gridPos": { "h": 9, "w": 8, "x": 16, "y": 23 },
+      "id": 10,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        { "expr": "max(node_filesystem_size_bytes{job=\"host-node-exporter\",fstype!~\"tmpfs|devtmpfs\"} - node_filesystem_avail_bytes{job=\"host-node-exporter\",fstype!~\"tmpfs|devtmpfs\"})", "legendFormat": "disk_used", "refId": "A" }
+      ],
+      "title": "Disk Used Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "Bps" }, "overrides": [] },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 32 },
+      "id": 11,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        { "expr": "sum(rate(node_network_receive_bytes_total{job=\"host-node-exporter\",device!=\"lo0\"}[5m]))", "legendFormat": "receive", "refId": "A" },
+        { "expr": "sum(rate(node_network_transmit_bytes_total{job=\"host-node-exporter\",device!=\"lo0\"}[5m]))", "legendFormat": "transmit", "refId": "B" }
+      ],
+      "title": "Network Throughput",
+      "type": "timeseries"
     }
   ],
   "refresh": "10s",
   "schemaVersion": 39,
-  "tags": ["host", "node"],
-  "templating": {"list": []},
-  "time": {"from": "now-30m", "to": "now"},
+  "tags": ["host", "node", "official"],
+  "templating": { "list": [] },
+  "time": { "from": "now-30m", "to": "now" },
   "timezone": "",
   "title": "Node On Host View",
   "uid": "node-on-host-view",
-  "version": 1
+  "version": 3
 }
