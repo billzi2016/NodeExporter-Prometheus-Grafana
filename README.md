@@ -2,6 +2,8 @@
 
 这是一个按 SDD 方式推进的本机监控系统项目。
 
+> A macOS-focused observability project combining official Node Exporter, a custom FastAPI exporter, Prometheus, and Grafana to compare container-side and host-side monitoring.
+
 当前实现目标是搭出一套同时包含“官方方案展示”和“自定义宿主机采集”的监控链路：
 
 - `node exporter`
@@ -86,28 +88,30 @@ NodeExporter-Prometheus-Grafana/
     └── prds/
 ```
 
-## Demo 截图
+## Demo 展示
+
+这一组截图不是简单的运行记录，而是这个仓库当前实现结果的可视化展示。它们对应了三套 exporter、四个 dashboard，以及 Docker 内外采集视角的差异。
 
 - `demo/1.png`
-  - `Compare Node In/Out Docker` 总览页截图，用于展示 Docker 内外官方 `node_exporter` 的差异对比。
+  - 对比视图首页，展示 Docker 内官方 `node_exporter` 和宿主机官方 `node_exporter` 的整体差异，是理解本项目监控设计的入口图。
 - `demo/2.png`
-  - `Node In Docker View` 截图，用于展示 Docker 内官方 `node_exporter` 看到的容器侧指标。
+  - `Node In Docker View` 页面，展示 Docker 内官方 `node_exporter` 的完整指标面板，重点体现容器 / LinuxKit 视角。
 - `demo/3.png`
-  - `Node On Host View` 截图，用于展示宿主机官方 `node_exporter` 看到的主机侧指标。
+  - `Node On Host View` 页面，展示宿主机官方 `node_exporter` 的指标面板，重点体现宿主机原生视角。
 - `demo/4.png`
-  - `FastAPI Homemade Exporter View` 截图，用于展示自定义 exporter 暴露的宿主机指标。
+  - `FastAPI Homemade Exporter View` 页面，展示自定义 `homemade-profiler` 输出的宿主机 CPU、内存、GPU、网络和硬盘指标。
 - `demo/5.png`
-  - CPU 相关面板截图，用于展示使用率、拆分趋势和负载变化。
+  - CPU 面板展示，突出不同 exporter 下的 CPU 使用率、拆分趋势和负载变化。
 - `demo/6.png`
-  - 内存相关面板截图，用于展示总量、已用、可用和使用率变化。
+  - 内存面板展示，突出总量、已用、可用和使用率等关键指标的可视化效果。
 - `demo/7.png`
-  - 磁盘相关面板截图，用于展示容量、已用空间和磁盘趋势。
+  - 磁盘面板展示，突出容量、已用空间、剩余空间和趋势变化。
 - `demo/8.png`
-  - 网络相关面板截图，用于展示吞吐趋势和接口级别统计。
+  - 网络面板展示，突出吞吐趋势以及不同接口维度的网络统计。
 - `demo/9.png`
-  - exporter 状态截图，用于展示 `Prometheus` 对多个采集端的抓取结果。
+  - exporter 状态展示，体现 `Prometheus` 同时抓取三套 exporter 的运行状态。
 - `demo/10.png`
-  - Grafana dashboard 列表截图，用于展示项目当前提供的多个视图入口。
+  - Grafana dashboard 列表展示，体现这个仓库最终提供的多个视图入口和整体展示结构。
 
 ## 默认端口
 
