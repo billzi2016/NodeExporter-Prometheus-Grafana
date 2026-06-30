@@ -94,24 +94,34 @@ NodeExporter-Prometheus-Grafana/
 
 - `demo/1.png`
   - 对比视图首页，展示 Docker 内官方 `node_exporter` 和宿主机官方 `node_exporter` 的整体差异，是理解本项目监控设计的入口图。
+  ![Compare View Home](demo/1.png)
 - `demo/2.png`
   - `Node In Docker View` 页面，展示 Docker 内官方 `node_exporter` 的完整指标面板，重点体现容器 / LinuxKit 视角。
+  ![Node In Docker View](demo/2.png)
 - `demo/3.png`
   - `Node On Host View` 页面，展示宿主机官方 `node_exporter` 的指标面板，重点体现宿主机原生视角。
+  ![Node On Host View](demo/3.png)
 - `demo/4.png`
   - `FastAPI Homemade Exporter View` 页面，展示自定义 `homemade-profiler` 输出的宿主机 CPU、内存、GPU、网络和硬盘指标。
+  ![FastAPI Homemade Exporter View](demo/4.png)
 - `demo/5.png`
   - CPU 面板展示，突出不同 exporter 下的 CPU 使用率、拆分趋势和负载变化。
+  ![CPU Panel View](demo/5.png)
 - `demo/6.png`
   - 内存面板展示，突出总量、已用、可用和使用率等关键指标的可视化效果。
+  ![Memory Panel View](demo/6.png)
 - `demo/7.png`
   - 磁盘面板展示，突出容量、已用空间、剩余空间和趋势变化。
+  ![Disk Panel View](demo/7.png)
 - `demo/8.png`
   - 网络面板展示，突出吞吐趋势以及不同接口维度的网络统计。
+  ![Network Panel View](demo/8.png)
 - `demo/9.png`
   - exporter 状态展示，体现 `Prometheus` 同时抓取三套 exporter 的运行状态。
+  ![Exporter Status View](demo/9.png)
 - `demo/10.png`
   - Grafana dashboard 列表展示，体现这个仓库最终提供的多个视图入口和整体展示结构。
+  ![Grafana Dashboard List](demo/10.png)
 
 ## 默认端口
 
